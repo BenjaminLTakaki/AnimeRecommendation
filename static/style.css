@@ -1,4 +1,3 @@
-/* Update body background for a more vibrant look */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #e0f7fa; /* Light Cyan */
@@ -6,7 +5,6 @@ body {
     padding: 0;
 }
 
-/* Update container styling for better aesthetics */
 .container {
     width: 90%;
     max-width: 900px;
@@ -17,7 +15,6 @@ body {
     border-radius: 8px;
 }
 
-/* Update headings with vibrant colors */
 h1 {
     text-align: center;
     color: #00796b; /* Teal */
@@ -28,12 +25,10 @@ h2 {
     color: #004d40; /* Dark Teal */
 }
 
-/* Refine form group spacing */
 .form-group {
     margin-bottom: 25px;
 }
 
-/* Style input fields */
 input[type="text"],
 input[type="password"] {
     padding: 12px;
@@ -52,7 +47,6 @@ input[type="password"]:focus {
     outline: none;
 }
 
-/* Update genre list styling */
 .genre-list {
     column-count: 2;
     column-gap: 25px;
@@ -64,7 +58,6 @@ input[type="password"]:focus {
     font-size: 15px;
 }
 
-/* Professional button styles */
 .btn {
     display: inline-block;
     padding: 12px 25px;
@@ -89,7 +82,6 @@ input[type="password"]:focus {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Refine save button styles */
 .save-btn {
     padding: 6px 14px;
     background-color: #ff9800; /* Orange */
@@ -230,20 +222,7 @@ form .btn {
     align-items: center;
 }
 
-/* Ensure back buttons use the .btn class or the new .back-btn class */
-a.btn, a.back-btn {
-    /* Inherit styles from .btn or .back-btn */
-}
-
-/* Ensure all .btn and .back-btn have consistent styles */
-a.btn, a.back-btn {
-    /* Inherit styles from .btn or .back-btn */
-    /* Already defined above */
-}
-
-/* Optionally, unify styles if desired */
 .btn, .back-btn {
-    /* Common styles */
     display: inline-block;
     padding: 10px 20px;
     color: #fff;
