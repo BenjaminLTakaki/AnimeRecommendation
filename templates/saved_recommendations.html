@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Saved Recommendations</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Your Saved Anime</h1>
+        <ul class="recommendations">
+            {% for anime in saved %}
+                <li>{{ anime }}</li>
+            {% endfor %}
+        </ul>
+        <a href="/" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>

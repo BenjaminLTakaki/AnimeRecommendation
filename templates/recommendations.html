@@ -9,10 +9,36 @@
         <h1>Your Anime Recommendations</h1>
         <ul class="recommendations">
             {% for anime in recommendations %}
-                <li>{{ anime }}</li>
+                <li>
+                    {{ anime }}
+                    {% if current_user.is_authenticated %}
+                        <button class="save-btn" data-anime="{{ anime }}">Save</button>
+                    {% endif %}
+                </li>
             {% endfor %}
         </ul>
         <a href="/" class="btn">Go Back</a>
+        {% if current_user.is_authenticated %}
+            <a href="{{ url_for('saved_recommendations') }}" class="toggle-saved-btn btn">View Saved Recommendations</a>
+        {% endif %}
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // Handle save button click
+            $('.save-btn').click(function(){
+                var button = $(this);
+                var anime = button.data('anime');
+                $.post("{{ url_for('save_recommendation') }}", {anime: anime}, function(response){
+                    if(response.status === 'success'){
+                        button.text('Saved');
+                        button.addClass('saved');
+                        button.prop('disabled', true);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

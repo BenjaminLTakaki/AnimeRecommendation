@@ -1,10 +1,23 @@
 import pandas as pd
 import numpy as np
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, redirect, url_for, session
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+import sqlite3
 from sklearn.preprocessing import MultiLabelBinarizer, OneHotEncoder, StandardScaler
 from sklearn.neighbors import NearestNeighbors
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+# User model
+class User(UserMixin):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
 
 # Load the dataset
 anime = pd.read_csv('anime.csv')
@@ -51,6 +64,117 @@ features, mlb, type_ohe, scaler = preprocess_data(anime)
 model = NearestNeighbors(metric='cosine', algorithm='brute')
 model.fit(features)
 
+def init_db():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    # Create users table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
+        )
+    ''')
+    # Create saved_anime table
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS saved_anime (
+            user_id INTEGER,
+            anime_name TEXT,
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
+
+@login_manager.user_loader
+def load_user(user_id):
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('SELECT id, username, password FROM users WHERE id = ?', (user_id,))
+    user = c.fetchone()
+    conn.close()
+    if user:
+        return User(id=user[0], username=user[1], password=user[2])
+    return None
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        try:
+            c.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+            conn.commit()
+            user = User(id=c.lastrowid, username=username, password=password)
+            login_user(user)
+            return redirect(url_for('recommend'))
+        except sqlite3.IntegrityError:
+            return 'Username already exists'
+        finally:
+            conn.close()
+    else:
+        return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute('SELECT id, username, password FROM users WHERE username = ?', (username,))
+        user = c.fetchone()
+        conn.close()
+        if user and user[2] == password:
+            user_obj = User(id=user[0], username=user[1], password=user[2])
+            login_user(user_obj)
+            return redirect(url_for('recommend'))
+        else:
+            return 'Invalid credentials'
+    else:
+        return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+@app.route('/save_recommendation', methods=['POST'])
+@login_required
+def save_recommendation():
+    anime = request.form['anime']
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO saved_anime (user_id, anime_name) VALUES (?, ?)', (current_user.id, anime))
+    conn.commit()
+    conn.close()
+    return jsonify({'status': 'success'})
+
+@app.route('/get_saved_recommendations', methods=['GET'])
+@login_required
+def get_saved_recommendations():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('SELECT anime_name FROM saved_anime WHERE user_id = ?', (current_user.id,))
+    saved = [row[0] for row in c.fetchall()]
+    conn.close()
+    return jsonify({'saved': saved})
+
+@app.route('/saved_recommendations')
+@login_required
+def saved_recommendations():
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute('SELECT anime_name FROM saved_anime WHERE user_id = ?', (current_user.id,))
+    saved = [row[0] for row in c.fetchall()]
+    conn.close()
+    return render_template('saved_recommendations.html', saved=saved)
+
 # Recommendation function
 def recommend_anime(favorite_anime_list, favorite_genres_list, n_recommendations=10):
     # Get indices of favorite anime
@@ -82,6 +206,15 @@ def recommend_anime(favorite_anime_list, favorite_genres_list, n_recommendations
 
     # Get anime names
     recommended_anime = anime.iloc[indices[0]]['name'].values.tolist()
+
+    if current_user.is_authenticated:
+        conn = sqlite3.connect('database.db')
+        c = conn.cursor()
+        c.execute('SELECT anime_name FROM saved_anime WHERE user_id = ?', (current_user.id,))
+        saved_anime = set([row[0] for row in c.fetchall()])
+        conn.close()
+        recommended_anime = [anime for anime in recommended_anime if anime not in saved_anime]
+        recommended_anime = recommended_anime[:n_recommendations]
 
     return recommended_anime
 

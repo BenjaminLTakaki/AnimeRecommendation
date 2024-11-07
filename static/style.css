@@ -1,67 +1,148 @@
+/* Update body background for a more vibrant look */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #e0f7fa; /* Light Cyan */
     margin: 0;
     padding: 0;
 }
 
+/* Update container styling for better aesthetics */
 .container {
-    width: 80%;
-    max-width: 800px;
+    width: 90%;
+    max-width: 900px;
     margin: 50px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
+/* Update headings with vibrant colors */
 h1 {
     text-align: center;
-    color: #333;
-}
-
-h2 {
-    color: #555;
-}
-
-.form-group {
+    color: #00796b; /* Teal */
     margin-bottom: 20px;
 }
 
-input[type="text"] {
-    padding: 10px;
-    font-size: 16px;
-    margin-top: 10px;
+h2 {
+    color: #004d40; /* Dark Teal */
 }
 
+/* Refine form group spacing */
+.form-group {
+    margin-bottom: 25px;
+}
+
+/* Style input fields */
+input[type="text"],
+input[type="password"] {
+    padding: 12px;
+    font-size: 16px;
+    margin-top: 8px;
+    border: 1px solid #b2dfdb;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #00796b;
+    outline: none;
+}
+
+/* Update genre list styling */
 .genre-list {
     column-count: 2;
-    column-gap: 20px;
+    column-gap: 25px;
 }
 
 .genre-list label {
     display: block;
-    margin-bottom: 5px;
-    font-size: 14px;
+    margin-bottom: 8px;
+    font-size: 15px;
 }
 
-input[type="checkbox"] {
-    margin-right: 10px;
-}
-
+/* Professional button styles */
 .btn {
     display: inline-block;
-    padding: 10px 20px;
-    background-color: #007BFF;
+    padding: 12px 25px;
+    background-color: #00796b; /* Teal */
+    color: #ffffff;
+    border: none;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    background-color: #004d40; /* Dark Teal */
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Refine save button styles */
+.save-btn {
+    padding: 6px 14px;
+    background-color: #ff9800; /* Orange */
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.save-btn:hover {
+    background-color: #e68900;
+}
+
+.save-btn.saved {
+    background-color: #757575; /* Grey */
+    cursor: default;
+}
+
+.save-btn.saved:hover {
+    background-color: #757575;
+}
+
+/* Toggle saved recommendations button */
+.toggle-saved-btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #1976d2; /* Blue */
     color: #fff;
     border: none;
     text-decoration: none;
     font-size: 16px;
     cursor: pointer;
-    text-align: center;
+    border-radius: 6px;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.btn:hover {
-    background-color: #0056b3;
+.toggle-saved-btn:hover {
+    background-color: #0d47a1; /* Dark Blue */
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .genre-list {
+        column-count: 1;
+    }
+
+    .btn, .toggle-saved-btn {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 .recommendations {
@@ -79,11 +160,105 @@ input[type="checkbox"] {
 
 a.btn {
     margin-top: 20px;
-    text-align: center;
 }
 
-@media (max-width: 600px) {
-    .genre-list {
-        column-count: 1;
-    }
+form {
+    margin: 20px 0;
+}
+
+form .form-group {
+    margin-bottom: 15px;
+}
+
+form input[type="text"],
+form input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+form .btn {
+    width: auto;
+}
+
+.recommendations li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recommendations li form {
+    margin: 0;
+}
+
+.recommendations li button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.recommendations li button:hover {
+    background-color: #218838;
+}
+
+/* Saved recommendations section */
+#saved-recommendations {
+    display: none;
+    margin-top: 30px;
+}
+
+#saved-recommendations.active {
+    display: block;
+}
+
+#saved-recommendations ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#saved-recommendations li {
+    background-color: #e9e9e9;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Ensure back buttons use the .btn class or the new .back-btn class */
+a.btn, a.back-btn {
+    /* Inherit styles from .btn or .back-btn */
+}
+
+/* Ensure all .btn and .back-btn have consistent styles */
+a.btn, a.back-btn {
+    /* Inherit styles from .btn or .back-btn */
+    /* Already defined above */
+}
+
+/* Optionally, unify styles if desired */
+.btn, .back-btn {
+    /* Common styles */
+    display: inline-block;
+    padding: 10px 20px;
+    color: #fff;
+    border: none;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.btn {
+    background-color: #007BFF;
+}
+
+.btn:hover {
+    background-color: #0056b3;
 }
