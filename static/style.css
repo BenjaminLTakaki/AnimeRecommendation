@@ -1,205 +1,216 @@
+:root {
+    --primary-color: #00796b;
+    --secondary-color: #004d40;
+    --accent-color: #ff9800;
+    --background-color: #f0f4f8;
+    --text-color: #333333;
+    --light-bg: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Global Styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #e0f7fa; /* Light Cyan */
+    font-family: var(--font-family);
+    background-color: var(--background-color);
     margin: 0;
     padding: 0;
+    color: var(--text-color);
+    line-height: 1.6;
 }
 
 .container {
     width: 90%;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 50px auto;
-    background-color: #ffffff;
-    padding: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background-color: var(--light-bg);
+    padding: 40px;
+    box-shadow: 0 8px 30px var(--shadow-color);
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-h1 {
+.container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px var(--shadow-color);
+}
+
+h1, h2 {
     text-align: center;
-    color: #00796b; /* Teal */
-    margin-bottom: 20px;
-}
-
-h2 {
-    color: #004d40; /* Dark Teal */
-}
-
-.form-group {
+    color: var(--primary-color);
     margin-bottom: 25px;
 }
 
+h1 {
+    font-size: 2.5em;
+    position: relative;
+}
+
+h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: var(--accent-color);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+h2 {
+    font-size: 1.8em;
+    color: var(--secondary-color);
+    margin-top: 30px;
+}
+
+.form-group {
+    margin-bottom: 30px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
 input[type="text"],
-input[type="password"] {
-    padding: 12px;
+input[type="password"],
+textarea {
+    padding: 14px 20px;
     font-size: 16px;
     margin-top: 8px;
-    border: 1px solid #b2dfdb;
-    border-radius: 4px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     width: 100%;
     box-sizing: border-box;
-    transition: border-color 0.3s;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus {
-    border-color: #00796b;
+input[type="password"]:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(0, 121, 107, 0.2);
     outline: none;
 }
 
 .genre-list {
-    column-count: 2;
-    column-gap: 25px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
 }
 
 .genre-list label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    position: relative;
+    padding-left: 25px;
 }
 
-.btn {
+.genre-list input[type="checkbox"] {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.btn, .toggle-saved-btn, .back-btn {
     display: inline-block;
-    padding: 12px 25px;
-    background-color: #00796b; /* Teal */
+    padding: 14px 30px;
+    background-color: var(--primary-color);
     color: #ffffff;
     border: none;
     text-decoration: none;
     font-size: 16px;
     cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 6px 12px var(--shadow-color);
+    margin: 10px 5px 0 0;
 }
 
-.btn:hover {
-    background-color: #004d40; /* Dark Teal */
-    transform: translateY(-2px);
+.btn:hover, .toggle-saved-btn:hover, .back-btn:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px var(--shadow-color);
 }
 
-.btn:active {
+.btn:active, .toggle-saved-btn:active, .back-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px var(--shadow-color);
 }
 
 .save-btn {
-    padding: 6px 14px;
-    background-color: #ff9800; /* Orange */
+    padding: 8px 20px;
+    background-color: var(--accent-color);
     border: none;
     color: #fff;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.3s;
+    border-radius: 6px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .save-btn:hover {
     background-color: #e68900;
+    transform: scale(1.05);
 }
 
 .save-btn.saved {
-    background-color: #757575; /* Grey */
+    background-color: #757575;
     cursor: default;
 }
 
 .save-btn.saved:hover {
     background-color: #757575;
+    transform: none;
 }
 
-/* Toggle saved recommendations button */
-.toggle-saved-btn {
-    display: inline-block;
-    padding: 12px 25px;
-    background-color: #1976d2; /* Blue */
-    color: #fff;
-    border: none;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.toggle-saved-btn:hover {
-    background-color: #0d47a1; /* Dark Blue */
-    transform: translateY(-2px);
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    .genre-list {
-        column-count: 1;
-    }
-
-    .btn, .toggle-saved-btn {
-        width: 100%;
-        text-align: center;
-    }
-}
-
+/* Recommendations List */
 .recommendations {
     list-style-type: none;
     padding: 0;
-}
-
-.recommendations li {
-    background-color: #e9e9e9;
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 18px;
-    border-radius: 4px;
-}
-
-a.btn {
-    margin-top: 20px;
-}
-
-form {
     margin: 20px 0;
 }
 
-form .form-group {
-    margin-bottom: 15px;
-}
-
-form input[type="text"],
-form input[type="password"] {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-}
-
-form .btn {
-    width: auto;
-}
-
 .recommendations li {
+    background-color: #fafafa;
+    margin-bottom: 15px;
+    padding: 15px 20px;
+    font-size: 18px;
+    border-radius: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.recommendations li form {
-    margin: 0;
+.recommendations li:hover {
+    background-color: #f1f1f1;
+    box-shadow: 0 4px 10px var(--shadow-color);
 }
 
 .recommendations li button {
-    padding: 5px 10px;
+    padding: 6px 16px;
     background-color: #28a745;
     border: none;
     color: #fff;
     cursor: pointer;
     border-radius: 4px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .recommendations li button:hover {
     background-color: #218838;
+    transform: scale(1.05);
 }
 
-/* Saved recommendations section */
+/* Saved Recommendations Section */
 #saved-recommendations {
     display: none;
-    margin-top: 30px;
+    margin-top: 40px;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 #saved-recommendations.active {
@@ -212,32 +223,60 @@ form .btn {
 }
 
 #saved-recommendations li {
-    background-color: #e9e9e9;
-    margin-bottom: 10px;
-    padding: 10px;
+    background-color: #e9f7ef;
+    margin-bottom: 15px;
+    padding: 15px 20px;
     font-size: 18px;
-    border-radius: 4px;
+    border-radius: 6px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
-.btn, .back-btn {
-    display: inline-block;
-    padding: 10px 20px;
-    color: #fff;
-    border: none;
-    text-decoration: none;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-top: 20px;
+#saved-recommendations li:hover {
+    background-color: #d4edda;
+    box-shadow: 0 4px 10px var(--shadow-color);
 }
 
-.btn {
-    background-color: #007BFF;
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.btn:hover {
-    background-color: #0056b3;
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    .genre-list {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn, .toggle-saved-btn, .back-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .recommendations li, #saved-recommendations li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .recommendations li button {
+        margin-top: 10px;
+    }
 }

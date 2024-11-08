@@ -33,11 +33,13 @@ def preprocess_data(anime):
     base_anime['rating'] = base_anime['rating'].fillna(base_anime['rating'].median())
     base_anime['members'] = base_anime['members'].fillna(base_anime['members'].median())
     base_anime['episodes'] = base_anime['episodes'].replace(['Unknown', '?'], 0)
-    base_anime['episodes'] = base_anime['episodes'].fillna(0)
-    base_anime['episodes'] = base_anime['episodes'].astype(int)
+    base_anime['episodes'] = base_anime['episodes'].fillna(0).astype(int)
 
     # Split genres and create genre list
     base_anime['genre_list'] = base_anime['genre'].apply(lambda x: x.split(', '))
+
+    # Remove empty genres
+    base_anime = base_anime[base_anime['genre'].str.strip() != '']
 
     # Encode genres using MultiLabelBinarizer
     mlb = MultiLabelBinarizer()
