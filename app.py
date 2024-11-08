@@ -24,30 +24,33 @@ anime = pd.read_csv('anime.csv')
 
 # Preprocess the data
 def preprocess_data(anime):
+    # Filter to include only base anime (e.g., type is 'TV')
+    base_anime = anime[anime['type'] == 'TV'].copy()
+
     # Fill missing values
-    anime['genre'] = anime['genre'].fillna('')
-    anime['type'] = anime['type'].fillna('Unknown')
-    anime['rating'] = anime['rating'].fillna(anime['rating'].median())
-    anime['members'] = anime['members'].fillna(anime['members'].median())
-    anime['episodes'] = anime['episodes'].replace(['Unknown', '?'], 0)
-    anime['episodes'] = anime['episodes'].fillna(0)
-    anime['episodes'] = anime['episodes'].astype(int)
+    base_anime['genre'] = base_anime['genre'].fillna('')
+    base_anime['type'] = base_anime['type'].fillna('Unknown')
+    base_anime['rating'] = base_anime['rating'].fillna(base_anime['rating'].median())
+    base_anime['members'] = base_anime['members'].fillna(base_anime['members'].median())
+    base_anime['episodes'] = base_anime['episodes'].replace(['Unknown', '?'], 0)
+    base_anime['episodes'] = base_anime['episodes'].fillna(0)
+    base_anime['episodes'] = base_anime['episodes'].astype(int)
 
     # Split genres and create genre list
-    anime['genre_list'] = anime['genre'].apply(lambda x: x.split(', '))
+    base_anime['genre_list'] = base_anime['genre'].apply(lambda x: x.split(', '))
 
     # Encode genres using MultiLabelBinarizer
     mlb = MultiLabelBinarizer()
-    genre_dummies = mlb.fit_transform(anime['genre_list'])
+    genre_dummies = mlb.fit_transform(base_anime['genre_list'])
     genre_df = pd.DataFrame(genre_dummies, columns=mlb.classes_)
 
     # One-hot encode 'type'
     type_ohe = OneHotEncoder()
-    type_dummies = type_ohe.fit_transform(anime[['type']]).toarray()
+    type_dummies = type_ohe.fit_transform(base_anime[['type']]).toarray()
     type_df = pd.DataFrame(type_dummies, columns=type_ohe.get_feature_names_out(['type']))
 
     # Standardize numerical features
-    numerical_features = anime[['rating', 'members', 'episodes']]
+    numerical_features = base_anime[['rating', 'members', 'episodes']]
     scaler = StandardScaler()
     numerical_scaled = scaler.fit_transform(numerical_features)
     numerical_df = pd.DataFrame(numerical_scaled, columns=['rating', 'members', 'episodes'])
@@ -55,10 +58,10 @@ def preprocess_data(anime):
     # Combine all features
     features = pd.concat([genre_df, type_df, numerical_df], axis=1)
 
-    return features, mlb, type_ohe, scaler
+    return features, mlb, type_ohe, scaler, base_anime
 
 # Preprocess data and fit model
-features, mlb, type_ohe, scaler = preprocess_data(anime)
+features, mlb, type_ohe, scaler, base_anime = preprocess_data(anime)
 
 # Fit the NearestNeighbors model
 model = NearestNeighbors(metric='cosine', algorithm='brute')
@@ -177,8 +180,8 @@ def saved_recommendations():
 
 # Recommendation function
 def recommend_anime(favorite_anime_list, favorite_genres_list, n_recommendations=10):
-    # Get indices of favorite anime
-    anime_indices = anime[anime['name'].isin(favorite_anime_list)].index.tolist()
+    # Get indices of favorite anime from base_anime
+    anime_indices = base_anime[base_anime['name'].isin(favorite_anime_list)].index.tolist()
 
     # Average the features of the favorite anime
     if anime_indices:
@@ -204,8 +207,8 @@ def recommend_anime(favorite_anime_list, favorite_genres_list, n_recommendations
     # Find nearest neighbors
     distances, indices = model.kneighbors(user_profile, n_neighbors=n_recommendations)
 
-    # Get anime names
-    recommended_anime = anime.iloc[indices[0]]['name'].values.tolist()
+    # Get anime names from base_anime
+    recommended_anime = base_anime.iloc[indices[0]]['name'].values.tolist()
 
     if current_user.is_authenticated:
         conn = sqlite3.connect('database.db')
@@ -238,7 +241,8 @@ def recommend():
 
 @app.route('/anime_titles')
 def anime_titles():
-    anime_names = sorted(anime['name'].dropna().unique().tolist())
+    # Return anime names from base_anime
+    anime_names = sorted(base_anime['name'].dropna().unique().tolist())
     return jsonify(anime_names)
 
 if __name__ == '__main__':
